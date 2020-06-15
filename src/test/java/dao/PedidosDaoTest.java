@@ -13,12 +13,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import dao.PedidosDao;
+import dao.Pedido;
+import dao.Detalle;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  *
  * @author alvar
  */
 public class PedidosDaoTest {
+    static PedidosDao pedidos = new PedidosDao();
+    static Pedido pedido = new Pedido(11081,4,5, new Date(1992-6-3), new Date(1992-6-5), new Date(1992-6-7),1 ,new BigDecimal(30.60),"destinatario","direccion","ciudad","region","28049","España");
     
     public PedidosDaoTest() {
     }
@@ -42,30 +49,29 @@ public class PedidosDaoTest {
     /**
      * Test of getConexion method, of class PedidosDao.
      */
+    //TEST 
     @Test
     public void testGetConexion() {
         System.out.println("getConexion");
         PedidosDao instance = new PedidosDao();
         Connection expResult = null;
         Connection result = instance.getConexion();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotEquals(expResult, result);
+        
     }
 
     /**
      * Test of read method, of class PedidosDao.
      */
+    //TEST BIEN
     @Test
     public void testRead() {
+        //Despues de hacer el delete, este no funciona porque el pedido se ha eliminado
         System.out.println("read");
-        Integer idPedido = null;
-        PedidosDao instance = new PedidosDao();
-        Pedido expResult = null;
-        Pedido result = instance.read(idPedido);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Integer idPedido = 11076;
+        Pedido result = pedidos.read(idPedido);
+        assertEquals(result.getId(), idPedido);
+        
     }
 
     /**
@@ -73,14 +79,15 @@ public class PedidosDaoTest {
      */
     @Test
     public void testInsert() {
+        //TEST BIEN
+        //En este test habrá que ir sumando 1 cada vez que hagamos un test
+        //Ya que no se puede crear el mismo pedido dos veces
         System.out.println("insert");
-        Pedido pedido = null;
-        PedidosDao instance = new PedidosDao();
-        Integer expResult = null;
-        Integer result = instance.insert(pedido);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        //devuelve el id del pedido que acabo de crear
+        Integer result = pedidos.insert(pedido);
+        assertNotNull(result);
+        assertEquals(result,pedido.getId());
+        
     }
 
     /**
@@ -91,26 +98,29 @@ public class PedidosDaoTest {
         System.out.println("update");
         Pedido pedido = null;
         PedidosDao instance = new PedidosDao();
-        Integer expResult = null;
+        Integer expResult = 0;
+        //al ser 0, quiere decir que si funciona, si queremos que no funcione pondríamos un -1, que quiere decir que no se ha hecho la update
         Integer result = instance.update(pedido);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
 
     /**
      * Test of delete method, of class PedidosDao.
      */
     @Test
+    //TEST BIEN
     public void testDelete() {
         System.out.println("delete");
-        Integer idPedido = null;
-        PedidosDao instance = new PedidosDao();
-        Integer expResult = null;
-        Integer result = instance.delete(idPedido);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int result = pedidos.delete(11077);
+        //si funciona porque es un id que SI existe
+        //No funciona seguido porque el pedido se elimina y al no encontrarlo el test no pasa
+        assertEquals(result, 0);
+        
+//        result = pedidos.delete(000001);
+//        //No funcionaria porque es un id que NO existe
+//        assertNotEquals(result, 1);
+        
     }
 
     /**
@@ -119,13 +129,14 @@ public class PedidosDaoTest {
     @Test
     public void testListar() {
         System.out.println("listar");
-        Integer posicion = null;
+        Integer posicion = 9;
         PedidosDao instance = new PedidosDao();
-        ArrayList<Pedido> expResult = null;
+        ArrayList<Pedido> expResult = new ArrayList<>();
+        Pedido pedido2 = new Pedido(10926,4,5, new Date(1992-6-3), new Date(1992-6-5), new Date(1992-6-7),1 ,new BigDecimal(30.60),"destinatario","direccion","ciudad","region","28049","España");
+        expResult.add(pedido);
         ArrayList<Pedido> result = instance.listar(posicion);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(result.get(0).getId(), pedido2.getId());
+        
     }
     
 }
